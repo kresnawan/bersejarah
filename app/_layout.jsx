@@ -15,10 +15,7 @@ const mainLayout = () => {
 					height: 100,
 					backgroundColor: Colors[theme].tabBgColor
 				},
-				headerTintColor: Colors[theme].txtColor,
-				headerStyle: {
-					backgroundColor: Colors[theme].tabBgColor
-				}
+				headerShown: false
 			}}
 		>
 

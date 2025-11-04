@@ -1,15 +1,17 @@
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Dimensions } from 'react-native'
 import { useColorScheme } from 'react-native'
 import Colors from '../constants/Colors'
 
 const ThemedView = ({ children, style }) => {
+	const {screenWidth, screenHeight} = Dimensions.get("window");
 	const theme = useColorScheme();
 	const styles = StyleSheet.create({
 		view: {
 			backgroundColor: Colors[theme].bgColor,
-			width: '100%',
-			height: '100%',
-			paddingHorizontal: 15
+			width: screenWidth,
+			height: screenHeight,
+			paddingHorizontal: 20,
+			borderRadius: 10
 		}
 	})
 	return (

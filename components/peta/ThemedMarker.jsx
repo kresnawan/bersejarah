@@ -1,13 +1,15 @@
-import { StyleSheet, Image } from 'react-native'
-import { Marker } from 'react-native-maps'
+import { Image, Text, View } from 'react-native'
+import { Marker, Callout, CalloutSubview } from 'react-native-maps'
 
-const ThemedMarker = ({ coordinate, title, description, onPress }) => {
+const ThemedMarker = ({ coordinate, title, description, id, ref }) => {
 	return (
 		<Marker
-			coordinate={{ latitude: coordinate.latitude, longitude: coordinate.longitude }}
 			title={title}
 			description={description}
-			onPress={onPress}
+			calloutEnabled={false}
+			coordinate={{ latitude: coordinate.latitude, longitude: coordinate.longitude }}
+			identifier={id}
+			ref={ref}
 		>
 			<Image
 				source={require("../../assets/marker.png")}
@@ -17,6 +19,22 @@ const ThemedMarker = ({ coordinate, title, description, onPress }) => {
 					resizeMode: 'contain'
 				}}
 			/>
+			{/* <Callout
+				style={{
+					padding: 20,
+					width: 300,
+					height: 150,
+					backgroundColor: 'orange',
+					zIndex: 100
+				}}
+				onPress={() =>{
+					console.log("Callout pressed")
+				}}
+			>
+				<Text>Android asu</Text>
+
+			</Callout> */}
+
 		</Marker>
 	)
 }
