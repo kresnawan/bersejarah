@@ -46,7 +46,7 @@ const DataCard = ({title, desc, lat, long}) => {
 
 				<ThemedText type={"h3"}>{title}</ThemedText>
 				<ThemedText type={"text"} style={{ marginTop: 10, height: 100 }}>{desc}</ThemedText>
-				<ThemedText type={"text"} style={{color: 'orange', marginTop: 20}}>Baca selengkapnya</ThemedText>
+				<ThemedText type={"text"} style={{color: 'orange', marginTop: 20, textDecorationLine: 'underline'}}>Baca selengkapnya</ThemedText>
 			</View>
 			{/* <View>
 				<Ionicons name='map' size={15} color={`orange`} />

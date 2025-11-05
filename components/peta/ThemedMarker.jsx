@@ -1,7 +1,7 @@
 import { Image, Text, View } from 'react-native'
 import { Marker, Callout, CalloutSubview } from 'react-native-maps'
 
-const ThemedMarker = ({ coordinate, title, description, id, ref }) => {
+const ThemedMarker = ({ coordinate, title, description, id, ref, onPress }) => {
 	return (
 		<Marker
 			title={title}
@@ -10,6 +10,7 @@ const ThemedMarker = ({ coordinate, title, description, id, ref }) => {
 			coordinate={{ latitude: coordinate.latitude, longitude: coordinate.longitude }}
 			identifier={id}
 			ref={ref}
+			onPress={onPress}
 		>
 			<Image
 				source={require("../../assets/marker.png")}
@@ -19,21 +20,21 @@ const ThemedMarker = ({ coordinate, title, description, id, ref }) => {
 					resizeMode: 'contain'
 				}}
 			/>
-			{/* <Callout
-				style={{
+			<Callout tooltip>
+				<View
+					style={{
 					padding: 20,
 					width: 300,
 					height: 150,
 					backgroundColor: 'orange',
 					zIndex: 100
 				}}
-				onPress={() =>{
-					console.log("Callout pressed")
-				}}
-			>
-				<Text>Android asu</Text>
+				>
+					<Text>Android asu</Text>
+				</View>
+				
 
-			</Callout> */}
+			</Callout>
 
 		</Marker>
 	)

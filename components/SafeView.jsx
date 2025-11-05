@@ -7,7 +7,6 @@ const SafeView = ({children}) => {
   const theme = useColorScheme();
   return (
     <View style={{
-        paddingTop: 50,
         paddingHorizontal: 0,
         width: '100%',
         height: '100%',
