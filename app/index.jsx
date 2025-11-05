@@ -217,25 +217,33 @@ const index = () => {
 				</View>
 			}
 
-			<ThemedView style={{ paddingTop: 0, marginBottom: 105 }}>
+			<ThemedView style={{ paddingHorizontal: 0 }}>
 
-				<ScrollView showsVerticalScrollIndicator={false} style={{ marginBottom: 10, paddingTop: 20 }}>
-					<ThemedText style={{ marginTop: 10 }} type={"text"}>
-						Temukan tempat bersejarah disekitarmu, data didasarkan pada hasil penelitian dan pengamatan
-					</ThemedText>
-					<View>
-						{
-							markers.map((item, index) => (
-								<Pressable key={index} onPress={() => {
-									focusToCoordinate(item, index)
-									showCallout(item.title, item.addr)
-								}}>
-									<DataCard title={item.title} desc={item.desc} />
-								</Pressable>
-							))
-						}
-					</View>
+
+				<ThemedText style={{ marginTop: 10, paddingHorizontal: 15 }} type={"text"}>
+					Temukan tempat bersejarah disekitarmu, data didasarkan pada hasil penelitian dan pengamatan
+				</ThemedText>
+				<ScrollView
+					showsHorizontalScrollIndicator={false}
+					horizontal
+					style={{
+						paddingVertical: 0,
+						flexDirection: 'row',
+						paddingHorizontal: 15
+					}}
+				>
+					{
+						markers.map((item, index) => (
+							<Pressable key={index} onPress={() => {
+								focusToCoordinate(item, index)
+								showCallout(item.title, item.addr)
+							}}>
+								<DataCard title={item.title} desc={item.desc} />
+							</Pressable>
+						))
+					}
 				</ScrollView>
+
 			</ThemedView>
 
 		</SafeView>
