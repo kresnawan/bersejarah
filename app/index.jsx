@@ -11,7 +11,7 @@ import { useRef } from 'react'
 import { useColorScheme } from 'react-native'
 import { useEffect, useState } from 'react'
 import Colors from '../constants/Colors'
-import { MapView } from "@rnmapbox/maps"
+import MapLibre from '../components/MapLibre'
 
 const INITIAL_REGION = {
 	latitude: -7.709944,
@@ -145,9 +145,10 @@ const index = () => {
 	}, []);
 
 	return (
+		
 
 		<SafeView>
-			<MapView style={{flex: 1}} />
+			<MapLibre />
 			{/* <MapView
 				style={styles.map}
 				provider={PROVIDER_GOOGLE}
