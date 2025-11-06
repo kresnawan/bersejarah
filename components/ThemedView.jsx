@@ -10,7 +10,7 @@ const ThemedView = ({ children, style }) => {
 			backgroundColor: Colors[theme].bgColor,
 			width: screenWidth,
 			height: screenHeight,
-			paddingHorizontal: 20,
+			paddingHorizontal: 15,
 			borderRadius: 10
 		}
 	})

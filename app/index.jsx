@@ -1,16 +1,17 @@
 import { StyleSheet, View, Dimensions } from 'react-native'
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+// import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import SafeView from '../components/SafeView'
 import ThemedText from '../components/ThemedText'
 import ThemedView from '../components/ThemedView'
 import DataCard from '../components/peta/DataCard'
 import { ScrollView, Animated } from 'react-native'
-import ThemedMarker from '../components/peta/ThemedMarker'
+// import ThemedMarker from '../components/peta/ThemedMarker'
 import { Pressable } from 'react-native'
 import { useRef } from 'react'
 import { useColorScheme } from 'react-native'
 import { useEffect, useState } from 'react'
 import Colors from '../constants/Colors'
+import { MapView } from "@rnmapbox/maps"
 
 const INITIAL_REGION = {
 	latitude: -7.709944,
@@ -146,8 +147,8 @@ const index = () => {
 	return (
 
 		<SafeView>
-
-			<MapView
+			<MapView style={{flex: 1}} />
+			{/* <MapView
 				style={styles.map}
 				provider={PROVIDER_GOOGLE}
 				initialRegion={initialRegion}
@@ -178,7 +179,7 @@ const index = () => {
 						/>
 					))
 				}
-			</MapView>
+			</MapView> */}
 
 			{
 				calloutShown &&
@@ -217,25 +218,33 @@ const index = () => {
 				</View>
 			}
 
-			<ThemedView style={{ paddingTop: 0, marginBottom: 105 }}>
+			<ThemedView style={{ paddingHorizontal: 0 }}>
 
-				<ScrollView showsVerticalScrollIndicator={false} style={{ marginBottom: 10, paddingTop: 20 }}>
-					<ThemedText style={{ marginTop: 10 }} type={"text"}>
-						Temukan tempat bersejarah disekitarmu, data didasarkan pada hasil penelitian dan pengamatan
-					</ThemedText>
-					<View>
-						{
-							markers.map((item, index) => (
-								<Pressable key={index} onPress={() => {
-									focusToCoordinate(item, index)
-									showCallout(item.title, item.addr)
-								}}>
-									<DataCard title={item.title} desc={item.desc} />
-								</Pressable>
-							))
-						}
-					</View>
+
+				<ThemedText style={{ marginTop: 10, paddingHorizontal: 15 }} type={"text"}>
+					Temukan tempat bersejarah disekitarmu, data didasarkan pada hasil penelitian dan pengamatan
+				</ThemedText>
+				<ScrollView
+					showsHorizontalScrollIndicator={false}
+					horizontal
+					style={{
+						paddingVertical: 0,
+						flexDirection: 'row',
+						paddingHorizontal: 15
+					}}
+				>
+					{
+						markers.map((item, index) => (
+							<Pressable key={index} onPress={() => {
+								focusToCoordinate(item, index)
+								showCallout(item.title, item.addr)
+							}}>
+								<DataCard title={item.title} desc={item.desc} />
+							</Pressable>
+						))
+					}
 				</ScrollView>
+
 			</ThemedView>
 
 		</SafeView>
