@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["Bersejarah_moduleModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.bersejarah_module.Bersejarah_moduleModule"]
+  }
+}

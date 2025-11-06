@@ -1,16 +1,17 @@
 import { StyleSheet, View, Dimensions } from 'react-native'
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+// import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import SafeView from '../components/SafeView'
 import ThemedText from '../components/ThemedText'
 import ThemedView from '../components/ThemedView'
 import DataCard from '../components/peta/DataCard'
 import { ScrollView, Animated } from 'react-native'
-import ThemedMarker from '../components/peta/ThemedMarker'
+// import ThemedMarker from '../components/peta/ThemedMarker'
 import { Pressable } from 'react-native'
 import { useRef } from 'react'
 import { useColorScheme } from 'react-native'
 import { useEffect, useState } from 'react'
 import Colors from '../constants/Colors'
+import { MapView } from "@rnmapbox/maps"
 
 const INITIAL_REGION = {
 	latitude: -7.709944,
@@ -146,8 +147,8 @@ const index = () => {
 	return (
 
 		<SafeView>
-
-			<MapView
+			<MapView style={{flex: 1}} />
+			{/* <MapView
 				style={styles.map}
 				provider={PROVIDER_GOOGLE}
 				initialRegion={initialRegion}
@@ -178,7 +179,7 @@ const index = () => {
 						/>
 					))
 				}
-			</MapView>
+			</MapView> */}
 
 			{
 				calloutShown &&
