@@ -12,6 +12,7 @@ import { useColorScheme } from 'react-native'
 import { useEffect, useState } from 'react'
 import Colors from '../constants/Colors'
 import MapLibre from '../components/MapLibre'
+import { MapView, StyleURL } from "@maplibre/maplibre-react-native";
 
 const INITIAL_REGION = {
 	latitude: -7.709944,
@@ -220,8 +221,6 @@ const index = () => {
 			}
 
 			<ThemedView style={{ paddingHorizontal: 0 }}>
-
-
 				<ThemedText style={{ marginTop: 10, paddingHorizontal: 15 }} type={"text"}>
 					Temukan tempat bersejarah disekitarmu, data didasarkan pada hasil penelitian dan pengamatan
 				</ThemedText>
