@@ -1,4 +1,4 @@
-import { StyleSheet, View, Dimensions } from 'react-native'
+import { StyleSheet, View, Dimensions, ActivityIndicator } from 'react-native'
 // import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import SafeView from '../components/SafeView'
 import ThemedText from '../components/ThemedText'
@@ -11,8 +11,9 @@ import { useRef } from 'react'
 import { useColorScheme } from 'react-native'
 import { useEffect, useState } from 'react'
 import Colors from '../constants/Colors'
-import MapLibre from '../components/MapLibre'
-import { MapView, StyleURL } from "@maplibre/maplibre-react-native";
+import { MapView, PointAnnotation, Camera } from "@maplibre/maplibre-react-native"
+import { Suspense } from 'react'
+import axios from 'axios';
 
 const INITIAL_REGION = {
 	latitude: -7.709944,
@@ -21,43 +22,43 @@ const INITIAL_REGION = {
 	longitudeDelta: 3
 }
 
-const markers = [
-	{
-		latitude: -7.759595,
-		longitude: 112.306516,
-		title: "Candi Yumerta",
-		addr: "Jl. Kaca Piring, Tulungrejo, Pare",
-		desc: "Lorem ipsum dolor sit amet pronc des tur elit ange du blanc pur"
-	},
-	{
-		latitude: -7.729595,
-		longitude: 112.406516,
-		title: "Tempat 2",
-		addr: "Jl. Kaca Piring, Tulungrejo, Pare",
-		desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce molestie ac nulla at egestas. In hac habitasse platea dictumst. In hendrerit enim ex, rutrum interdum risus imperdiet in. Maecenas eu elementum leo. Sed suscipit fringilla porta. Sed at lacinia ex, in imperdiet nibh. Pellentesque venenatis neque sit amet sapien finibus, a fermentum eros vehicula. Aenean a ullamcorper urna, at egestas lorem. Nullam pretium, dui sed malesuada facilisis, est mi placerat urna, eu hendrerit ante risus at odio. Morbi sagittis vulputate lacus, non porta magna consequat a. Vestibulum luctus, nisi eu aliquet hendrerit, nibh nisi condimentum lacus, ac lacinia magna libero vel nunc. Vestibulum justo lorem, porta nec nulla eu, placerat commodo lectus. Pellentesque elementum pellentesque libero in facilisis."
-	},
-	{
-		latitude: -7.709595,
-		longitude: 112.506516,
-		title: "Nama tempat",
-		addr: "Jl. Kaca Piring, Tulungrejo, Pare",
-		desc: "Deskripsi tempat"
-	},
-	{
-		latitude: -7.799595,
-		longitude: 112.606516,
-		title: "Nama tempat",
-		addr: "Jl. Kaca Piring, Tulungrejo, Pare",
-		desc: "Deskripsi tempat"
-	},
-	{
-		latitude: -7.779595,
-		longitude: 112.706516,
-		title: "Nama tempat",
-		addr: "Jl. Kaca Piring, Tulungrejo, Pare",
-		desc: "Deskripsi tempat"
-	},
-]
+// const markers = [
+// 	{
+// 		latitude: -7.759595,
+// 		longitude: 112.306516,
+// 		title: "Candi Yurta",
+// 		addr: "Jl. Kaca Piring, Tulungrejo, Pare",
+// 		desc: "Lorem ipsum dolor sit amet pronc des tur elit ange du blanc pur"
+// 	},
+// 	{
+// 		latitude: -7.729595,
+// 		longitude: 112.406516,
+// 		title: "Tempat 2",
+// 		addr: "Jl. Kaca Piring, Tulungrejo, Pare",
+// 		desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce molestie ac nulla at egestas. In hac habitasse platea dictumst. In hendrerit enim ex, rutrum interdum risus imperdiet in. Maecenas eu elementum leo. Sed suscipit fringilla porta. Sed at lacinia ex, in imperdiet nibh. Pellentesque venenatis neque sit amet sapien finibus, a fermentum eros vehicula. Aenean a ullamcorper urna, at egestas lorem. Nullam pretium, dui sed malesuada facilisis, est mi placerat urna, eu hendrerit ante risus at odio. Morbi sagittis vulputate lacus, non porta magna consequat a. Vestibulum luctus, nisi eu aliquet hendrerit, nibh nisi condimentum lacus, ac lacinia magna libero vel nunc. Vestibulum justo lorem, porta nec nulla eu, placerat commodo lectus. Pellentesque elementum pellentesque libero in facilisis."
+// 	},
+// 	{
+// 		latitude: -7.709595,
+// 		longitude: 112.506516,
+// 		title: "Nama tempat",
+// 		addr: "Jl. Kaca Piring, Tulungrejo, Pare",
+// 		desc: "Deskripsi tempat"
+// 	},
+// 	{
+// 		latitude: -7.799595,
+// 		longitude: 112.606516,
+// 		title: "Nama tempat",
+// 		addr: "Jl. Kaca Piring, Tulungrejo, Pare",
+// 		desc: "Deskripsi tempat"
+// 	},
+// 	{
+// 		latitude: -7.779595,
+// 		longitude: 112.706516,
+// 		title: "Nama tempat",
+// 		addr: "Jl. Kaca Piring, Tulungrejo, Pare",
+// 		desc: "Deskripsi tempat"
+// 	},
+// ]
 
 const customMapStyle = [
 	{
@@ -80,23 +81,31 @@ const customMapStyle = [
 
 const { width, height } = Dimensions.get("window");
 
-
-
 const index = () => {
+	const cameraRef = useRef();
 	const mapRef = useRef();
 	const markerRef = useRef([]);
 	const theme = useColorScheme();
 	const [initialRegion, setInitialRegion] = useState(null);
 
+	const [loadingDone, setLoadingDone] = useState(false);
+
 	const [calloutName, setCalloutName] = useState("");
 	const [calloutAddress, setCalloutAddress] = useState("");
 	const [calloutShown, setCalloutShown] = useState(false);
+	const [markers, setMarkers] = useState([]);
 
-	const focusToCoordinate = (item, index) => {
-		mapRef.current.animateCamera({ center: { latitude: item.latitude, longitude: item.longitude }, zoom: 12 }, { duration: 1000 })
-		setTimeout(() => {
-			markerRef.current[index].showCallout();
-		}, 1000);
+	function getAllData() {
+		axios({
+			url: "http://d1fe7b0caf1c.ngrok-free.app/api/v1/data",
+			method: "GET"
+		}).then(res => {
+			setMarkers(res.data);
+			setLoadingDone(true);
+		}).catch(err => {
+			console.log(err);
+			setLoadingDone(true);
+		})
 	}
 
 	function showCallout(name, address) {
@@ -117,6 +126,7 @@ const index = () => {
 	}
 
 	useEffect(() => {
+		getAllData();
 		if (markers.length > 0) {
 			let minLat = Infinity;
 			let maxLat = -Infinity;
@@ -136,52 +146,33 @@ const index = () => {
 			const latitudeDelta = (maxLat - minLat) * 1.2; // 20% padding
 			const longitudeDelta = (maxLon - minLon) * 1.2; // 20% padding
 
-			setInitialRegion({
-				latitude: centerLat,
-				longitude: centerLon,
-				latitudeDelta,
-				longitudeDelta,
-			});
+			setInitialRegion([
+				centerLon, centerLat
+			]);
 		}
 	}, []);
 
 	return (
-		
+
 
 		<SafeView>
-			<MapLibre />
-			{/* <MapView
-				style={styles.map}
-				provider={PROVIDER_GOOGLE}
-				initialRegion={initialRegion}
-				customMapStyle={customMapStyle}
-				userInterfaceStyle='dark'
-				ref={mapRef}
-				toolbarEnabled={false}
-				onRegionChange={() => {
-					if (calloutShown) {
-						setCalloutShown(false);
-					}
-				}}
-			>
-				{
-					markers.map((item, index) => (
-						<ThemedMarker
-							coordinate={item}
-							title={item.title}
-							description={item.addr}
-							key={index}
-							ref={e => markerRef.current[index] = e}
-							onPress={() => {
-
-								focusToCoordinate(item, index)
-								showCallout(item.title, item.addr)
-							}}
-
-						/>
-					))
-				}
-			</MapView> */}
+			{
+				loadingDone === true && (
+					<MapView
+						style={{
+							flex: 1
+						}}
+						mapStyle={"https://api.maptiler.com/maps/outdoor-v2/style.json?key=qMwjSy8lYbHFysUGYPyX"}
+					>
+						{
+							markers.map((item, index) => (
+								<PointAnnotation coordinate={[item.longitude, item.latitude]} key={index} />
+							))
+						}
+						<Camera centerCoordinate={initialRegion} zoomLevel={9} ref={cameraRef} />
+					</MapView>
+				)
+			}
 
 			{
 				calloutShown &&
@@ -220,29 +211,37 @@ const index = () => {
 				</View>
 			}
 
-			<ThemedView style={{ paddingHorizontal: 0 }}>
-				<ThemedText style={{ marginTop: 10, paddingHorizontal: 15 }} type={"text"}>
+			<ThemedView style={{ paddingHorizontal: 0, paddingVertical: 15 }}>
+				<ThemedText style={{ marginTop: 0, paddingHorizontal: 15 }} type={"text"}>
 					Temukan tempat bersejarah disekitarmu, data didasarkan pada hasil penelitian dan pengamatan
 				</ThemedText>
 				<ScrollView
 					showsHorizontalScrollIndicator={false}
 					horizontal
 					style={{
-						paddingVertical: 0,
 						flexDirection: 'row',
-						paddingHorizontal: 15
+						paddingHorizontal: 15,
+						marginTop: 15
 					}}
 				>
-					{
-						markers.map((item, index) => (
-							<Pressable key={index} onPress={() => {
-								focusToCoordinate(item, index)
-								showCallout(item.title, item.addr)
-							}}>
-								<DataCard title={item.title} desc={item.desc} />
-							</Pressable>
-						))
-					}
+					<Suspense fallback={<ActivityIndicator size="large" color="#0000ff" />}>
+						{
+							markers.map((item, index) => (
+								<Pressable key={index} onPress={() => {
+									cameraRef.current?.setCamera({
+										centerCoordinate: [item.longitude, item.latitude],
+										zoomLevel: 12,
+										animationDuration: 5000,
+									});
+
+
+
+								}}>
+									<DataCard title={item.title} desc={item.description} />
+								</Pressable>
+							))
+						}
+					</Suspense>
 				</ScrollView>
 
 			</ThemedView>

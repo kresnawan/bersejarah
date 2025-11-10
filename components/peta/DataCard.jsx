@@ -17,7 +17,7 @@ const DataCard = ({title, desc, lat, long}) => {
 				borderRadius: 10,
 				flexDirection: 'row',
 				justifyContent: 'space-between',
-				marginTop: 30,
+				marginTop: 0,
 				backgroundColor: Colors[theme].tabBgColor,
 				width: width * 0.90,
 				height: height / 2 * 0.5,

@@ -9,19 +9,20 @@ const ThemedText = ({ children, style, type, props }) => {
 	const styles = StyleSheet.create({
 		text: {
 			color: Colors[theme].txtColor,
+			fontSize: 12
 		},
 		h1: {
-			fontSize: 40,
-			fontWeight: 'bold',
-			color: Colors[theme].txtColor,
-		},
-		h2: {
 			fontSize: 30,
 			fontWeight: 'bold',
 			color: Colors[theme].txtColor,
 		},
-		h3: {
+		h2: {
 			fontSize: 20,
+			fontWeight: 'bold',
+			color: Colors[theme].txtColor,
+		},
+		h3: {
+			fontSize: 15,
 			fontWeight: 'bold',
 			color: Colors[theme].txtColor,
 		},

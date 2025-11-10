@@ -24,6 +24,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "navigationBar": {
+        "visible": "true",
+        "translucent": true,
+        "backgroundColor": "#FFFFFF00"
+      },
       "edgeToEdgeEnabled": true,
       "package": "com.kresnawan.bersejarah"
     },
