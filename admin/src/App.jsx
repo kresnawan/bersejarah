@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './pages/auth/Login.jsx'
 import ScrollToTop from './utils/ScrollToTop.jsx'
 
+import ProtectedRoutes from './auth/ProtectedRoutes.jsx'
+
 import { Navigate } from 'react-router-dom'
 
 import DashboardParent from './pages/dashboard/DashboardParent.jsx'
@@ -17,11 +19,15 @@ export default function App() {
         {/* Auth */}
         <Route path='/' element={<Navigate to={"/dashboard/data"} />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/dashboard' element={<DashboardParent />}>
-          <Route path='data' element={<Data />} />
-          <Route path='data/:id' element={<Id />} />
-          <Route path='tambah' element={<Tambah />} />
-        </Route>
+        <Route element={<ProtectedRoutes />} path='/dashboard'>
+
+        
+          <Route path='' element={<DashboardParent />}>
+            <Route path='data' element={<Data />} />
+            <Route path='data/:id' element={<Id />} />
+            <Route path='tambah' element={<Tambah />} />
+          </Route>
+          </Route>
       </Routes>
     </BrowserRouter>
   )
