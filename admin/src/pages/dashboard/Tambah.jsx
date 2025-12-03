@@ -1,0 +1,271 @@
+import { Button, Form, Input, Textarea, Image, NumberInput } from "@heroui/react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axiosPrivate from "../../axios.js";
+
+function Tambah() {
+
+	const navigate = useNavigate();
+
+	const [files, setFiles] = useState([]);
+	const [imagesURL, setImagesURL] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+
+	const [formInput, setFormInput] = useState({
+		nama_tempat: "",
+		alamat_jalan: "",
+		alamat_dusun: "",
+		alamat_kelurahan: "",
+		alamat_kecamatan: "",
+		alamat_kabupaten: "",
+		deskripsi: "",
+		lat: 0,
+		long: 0
+	});
+
+	function uploadImage(id) {
+		const formData = new FormData();
+		for (var file in files) {
+			formData.append("images", files[file]);
+		}
+
+		formData.append("id", id);
+
+		axiosPrivate.post("/data/upload", formData, {
+			headers: {
+				"Content-Type": "multipart/form-data"
+			}
+		}).then(res => {
+			console.log(res.data);
+			setIsLoading(false);
+			alert("Data berhasil ditambahkan")
+			navigate("/dashboard/data")
+		}).catch(err => {
+			console.log(err);
+			setIsLoading(false);
+			alert("Maaf terjadi error");
+		})
+	}
+
+	function handleSubmit(e) {
+
+		e.preventDefault();
+		setIsLoading(true);
+
+		if (formInput.lat > 90 || formInput.lat < -90) {
+			alert("Latitude antara -90 sampai 90");
+			return
+		}
+
+		if (formInput.long > 180 || formInput.long < -180) {
+			alert("Longitude antara -180 sampai 180");
+			return
+		}
+
+		
+		axiosPrivate.post("/data", formInput).then(res => {
+			console.log(res.data);
+			uploadImage(res.data.insertid);
+		}).catch(err => {
+			console.log(err);
+			setIsLoading(false);
+			alert("Maaf terjadi error");
+		})
+	}
+
+	function handleFormInput(event) {
+		const { name, value, type } = event.target
+
+		setFormInput((prev) => ({
+			...prev, [name]: type === 'number' ? parseFloat(value) : value
+		}))
+	}
+
+	function handleFormInputNumber(key, value) {
+
+		setFormInput((prev) => ({
+			...prev, [key]: parseFloat(value)
+		}))
+	}
+
+	function handleFileChange(e) {
+		let filesArr = Array.from(e.target.files);
+		setFiles(filesArr);
+
+		let tempURL = [];
+		for (var a in filesArr) {
+			tempURL.push(URL.createObjectURL(filesArr[a]))
+		}
+
+		setImagesURL(tempURL);
+	}
+
+	useEffect(() => {
+		console.log(files);
+		console.log(imagesURL)
+	}, [files, imagesURL])
+
+	return (
+		<div className="flex justify-center overflow-hidden">
+			<div className="w-full h-full pb-5 overflow">
+				<p className="my-5 text-2xl">Tambah data</p>
+				<div>
+					<Form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+
+						<Input
+							isRequired
+							label="Nama tempat"
+							type="text"
+							variant="flat"
+							radius="sm"
+							name="nama_tempat"
+							onChange={handleFormInput}
+						/>
+
+						<Input
+							isRequired
+							label="Alamat (jalan)"
+							type="text"
+							variant="flat"
+							radius="sm"
+							name="alamat_jalan"
+							onChange={handleFormInput}
+						/>
+
+						<div className="flex flex-row gap-4 w-full">
+							<Input
+								isRequired
+								label="Dusun"
+								type="text"
+								variant="flat"
+								className="w-[50%]"
+								radius="sm"
+								name="alamat_dusun"
+								onChange={handleFormInput}
+							/>
+							<Input
+								isRequired
+								label="Kelurahan"
+								type="text"
+								variant="flat"
+								className="w-[50%]"
+								radius="sm"
+								name="alamat_kelurahan"
+								onChange={handleFormInput}
+							/>
+						</div>
+
+						<div className="flex flex-row gap-4 w-full">
+							<Input
+								isRequired
+								label="Kecamatan"
+								type="text"
+								variant="flat"
+								className="w-[50%]"
+								radius="sm"
+								name="alamat_kecamatan"
+								onChange={handleFormInput}
+							/>
+							<Input
+								isRequired
+								label="Kabupaten"
+								type="text"
+								variant="flat"
+								className="w-[50%]"
+								radius="sm"
+								name="alamat_kabupaten"
+								onChange={handleFormInput}
+							/>
+						</div>
+
+						<NumberInput
+							isRequired
+							minValue={-90}
+							maxValue={90}
+							formatOptions={{
+								maximumFractionDigits: 20
+							}}
+							label="Latitude"
+							type="number"
+							variant="flat"
+							radius="sm"
+							name="lat"
+							description="Gunakan titik (.) untuk desimal"
+							value={formInput.lat}
+							onValueChange={e => handleFormInputNumber("lat", e)}
+						/>
+
+						<NumberInput
+							isRequired
+							maxValue={180}
+							minValue={-180}
+							formatOptions={{
+								maximumFractionDigits: 20
+							}}
+							label="Longitude"
+							type="number"
+							variant="flat"
+							radius="sm"
+							name="long"
+							description="Gunakan titik (.) untuk desimal"
+							value={formInput.long}
+							onValueChange={e => handleFormInputNumber("long", e)}
+						/>
+
+						<Textarea
+							isRequired
+							label="Deskripsi"
+							labelPlacement="inside"
+							name="deskripsi"
+							type="text"
+							minRows={9}
+							maxRows={9}
+							variant="flat"
+							radius="sm"
+							onChange={handleFormInput}
+						/>
+
+						<Input
+							label="Foto"
+							labelPlacement="outside"
+							placeholder="Enter your email"
+							type="file"
+							variant="flat"
+							description="Max. 10 file"
+							radius="sm"
+							multiple
+							onChange={handleFileChange}
+						/>
+
+						<div className="overflow-x-scroll">
+							<div className="flex">
+								{
+									imagesURL.length > 0 &&
+									imagesURL.map((item, index) => (
+										<div key={index} className="">
+											<Image src={item} className="max-h-[180px] inline-block" />
+										</div>
+									))
+								}
+							</div>
+						</div>
+
+						<Button
+							type="submit"
+							fullWidth
+							color="primary"
+							isLoading={isLoading}
+						>
+							Submit
+						</Button>
+
+					</Form>
+
+
+				</div>
+			</div>
+		</div>
+	)
+}
+
+export default Tambah

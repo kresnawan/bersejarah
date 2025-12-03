@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import ItemPhotosCarousel from '../../components/ItemPhotosCarousel.jsx';
 import { Spinner } from '@heroui/spinner';
 import { Button, ButtonGroup } from "@heroui/button";
-import { Image } from '@heroui/react';
+import { Image, Input, Textarea } from '@heroui/react';
 
 function GMapsIcon() {
 	return <Image height={28} src='https://www.gstatic.com/marketing-cms/assets/images/0f/9a/58f1d92b46069b4a8bdc556b612c/google-maps.webp=s48-fcrop64=1,00000000ffffffff-rw' />
@@ -65,6 +65,19 @@ function Id() {
 										startContent={<GMapsIcon />}
 									>Buka di Google Maps</Button>
 								</a>
+							</div>
+
+							{/* Comment section */}
+							<div className='mt-10'>
+								<h1>Komentar</h1>
+								<div className='mt-2'>
+									<Input type='text' placeholder='Nama anda' radius='sm' />
+									<Textarea fullWidth placeholder='Tambahkan komentar anda' radius='sm' className='mt-2' />
+									<Button radius='sm' color='primary' className='mt-2'>Komentar</Button>
+								</div>
+								<div className='mt-5 border-1 border-default-200 p-10 rounded-md'>
+									<h1 className='text-center'>Belum ada komentar..</h1>
+								</div>
 							</div>
 						</div>
 					</div>
