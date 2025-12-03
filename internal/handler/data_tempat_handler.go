@@ -253,3 +253,59 @@ func UpdateDataTempat(c *gin.Context) {
 	c.Abort()
 
 }
+
+func GetKomentarTempatFromTempatId(c *gin.Context) {
+	id := c.Param("id")
+	res, err := storage.GetKomentarTempatByTempatId(id)
+	if err != nil {
+		c.JSON(500, gin.H{"message": err})
+		c.Abort()
+		return
+	}
+
+	c.Data(200, "application/json", res)
+	c.Abort()
+}
+
+func UploadKomentarTempat(c *gin.Context) {
+	type KomentarBody struct {
+		Nama  string `json:"nama"`
+		Pesan string `json:"pesan"`
+	}
+
+	tempatId := c.Param("id")
+
+	var body KomentarBody
+
+	if err := c.BindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		c.Abort()
+		return
+	}
+
+	ra, err := storage.UploadKomentarTempat(tempatId, body.Nama, body.Pesan)
+
+	if err != nil {
+		c.JSON(500, gin.H{"message": err})
+		c.Abort()
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "Komentar berhasil diunggah", "affectedRows": ra})
+	c.Abort()
+}
+
+func DeleteKomentarTempatById(c *gin.Context) {
+	id := c.Param("id_k")
+	ra, err := storage.DeleteKomentarTempatById(id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		c.Abort()
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "Komentar berhasil dihapus", "affectedRows": ra})
+	c.Abort()
+
+}

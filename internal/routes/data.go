@@ -16,5 +16,9 @@ func DataTempatRoutes(rg *gin.RouterGroup) {
 		UsersRoute.GET("/:id/foto", handler.GetFotoByID)
 		UsersRoute.DELETE("/:id", handler.DeleteDataTempat)
 		UsersRoute.POST("/:id/update", handler.UpdateDataTempat)
+
+		UsersRoute.POST("/:id/komentar", handler.UploadKomentarTempat)
+		UsersRoute.GET("/:id/komentar", handler.GetKomentarTempatFromTempatId)
+		UsersRoute.DELETE("/komentar/:id_k", handler.DeleteKomentarTempatById)
 	}
 }

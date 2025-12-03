@@ -215,3 +215,86 @@ func EditData(id int, lati, longi float32, addr string, desc string) (sql.Result
 
 	return res, nil
 }
+
+func UploadKomentarTempat(id string, nama string, komentar string) (int, error) {
+	res, err := Db.Exec(`
+		INSERT INTO
+			komentar_tempat
+			(sender_name, message, id)
+		VALUES
+			(?, ?, ?)
+	`, nama, komentar, id)
+
+	if err != nil {
+		return 0, err
+	}
+
+	rA, err := res.RowsAffected()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(rA), nil
+
+}
+
+func GetKomentarTempatByTempatId(id string) ([]byte, error) {
+	type Komentar struct {
+		Id   int    `json:"id_k"`
+		Nama string `json:"sender_name"`
+		Text string `json:"message"`
+		Date string `json:"created_at"`
+	}
+
+	var arrKom []Komentar = make([]Komentar, 0)
+
+	rows, err := Db.Query(`
+		SELECT id_k, sender_name, message, created_at
+		FROM komentar_tempat
+		WHERE id = ?
+		ORDER BY created_at DESC LIMIT 10
+	`, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var kom Komentar
+		if err := rows.Scan(&kom.Id, &kom.Nama, &kom.Text, &kom.Date); err != nil {
+			return nil, err
+		}
+
+		arrKom = append(arrKom, kom)
+	}
+
+	json, err := json.Marshal(arrKom)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return json, nil
+}
+
+func DeleteKomentarTempatById(id string) (int, error) {
+	res, err := Db.Exec(`
+		DELETE FROM komentar_tempat WHERE id_k = ?
+	`, id)
+
+	if err != nil {
+		return 0, err
+	}
+
+	aR, err := res.RowsAffected()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(aR), err
+
+}

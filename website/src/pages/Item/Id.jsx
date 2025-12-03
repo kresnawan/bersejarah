@@ -5,6 +5,7 @@ import ItemPhotosCarousel from '../../components/ItemPhotosCarousel.jsx';
 import { Spinner } from '@heroui/spinner';
 import { Button, ButtonGroup } from "@heroui/button";
 import { Image, Input, Textarea } from '@heroui/react';
+import { PlusIcon } from "@heroicons/react/24/solid";
 
 function GMapsIcon() {
 	return <Image height={28} src='https://www.gstatic.com/marketing-cms/assets/images/0f/9a/58f1d92b46069b4a8bdc556b612c/google-maps.webp=s48-fcrop64=1,00000000ffffffff-rw' />
@@ -15,7 +16,47 @@ function Id() {
 	const [item, setItem] = useState({});
 	const [photos, setPhotos] = useState([]);
 
+	const [komentar, setKomentar] = useState([]);
+
+	const [namaKomentar, setNamaKomentar] = useState("");
+	const [pesanKomentar, setPesanKomentar] = useState("");
+
 	const [isLoading, setIsLoading] = useState(true);
+	const [isLoadingK, setIsLoadingK] = useState(false);
+	const [isLoadingPostKomentar, setIsLoadingPostKomentar] = useState(false);
+
+	const [showKomentar, setShowKomentar] = useState(false)
+
+	function getKomentar() {
+		setIsLoadingK(true);
+		axiosPrivate.get(`/data/${id}/komentar`).then(res => {
+			setKomentar(res.data);
+		}).catch(err => {
+			console.log(err);
+		}).finally(() => {
+			setIsLoadingK(false);
+		})
+	}
+
+	function postKomentar() {
+
+		if (namaKomentar === "" || pesanKomentar === "") {
+			return alert("Komentar harus valid")
+		}
+
+		setIsLoadingPostKomentar(true);
+		axiosPrivate.post(`/data/${id}/komentar`, {
+			nama: namaKomentar,
+			pesan: pesanKomentar
+		}).then(() => {
+			getKomentar();
+			setShowKomentar(false)
+		}).catch(err => {
+			console.log(err);
+		}).finally(() => {
+			setIsLoadingPostKomentar(false);
+		})
+	}
 
 	useEffect(() => {
 		axiosPrivate.get(`/data/${id}`).then(res => {
@@ -23,6 +64,7 @@ function Id() {
 			setItem(res.data);
 			axiosPrivate.get(`/data/${id}/foto`).then(res => {
 				setPhotos(res.data);
+				getKomentar();
 				setIsLoading(false)
 			}).catch(err => {
 				console.log(err);
@@ -30,9 +72,16 @@ function Id() {
 
 		}).catch(err => {
 			console.log(err);
+		}).finally(() => {
 			setIsLoading(false)
 		})
 	}, []);
+
+	useEffect(() => {
+		if (showKomentar) {
+			window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })
+		}
+	}, [showKomentar])
 
 
 	return (
@@ -69,15 +118,87 @@ function Id() {
 
 							{/* Comment section */}
 							<div className='mt-10'>
-								<h1>Komentar</h1>
-								<div className='mt-2'>
-									<Input type='text' placeholder='Nama anda' radius='sm' />
-									<Textarea fullWidth placeholder='Tambahkan komentar anda' radius='sm' className='mt-2' />
-									<Button radius='sm' color='primary' className='mt-2'>Komentar</Button>
+								<div className='flex flex-row justify-between'>
+									<h1 className='text-medium font-bold'>Komentar</h1>
+									{
+										!showKomentar && <PlusIcon className='size-6 hover:cursor-pointer' onClick={() => { setShowKomentar(true); }} />
+									}
 								</div>
-								<div className='mt-5 border-1 border-default-200 p-10 rounded-md'>
-									<h1 className='text-center'>Belum ada komentar..</h1>
+
+								<div className='mt-5 border-t-1 border-default-200 pt-5 rounded-md'>
+									{
+										!isLoadingK ?
+										
+											<div>
+												{
+													komentar.map((item, index) => (
+														<div key={index} className='mb-3 border-default-200 border-b-1 p-5 rounded-md'>
+															<div className='flex flex-row justify-between'>
+																<div>
+																	<h1 className='font-bold'>{item.sender_name}</h1>
+																	<p className='mt-2'>{item.message}</p>
+																</div>
+																<div className='text-right'>
+																	<p className='text-default-400'>
+																		{new Date(item.created_at).getDate()}/
+																		{new Date(item.created_at).getMonth() + 1}/
+																		{new Date(item.created_at).getFullYear()}
+																	</p>
+																	<p className='text-default-400'>
+																		{new Date(item.created_at).getHours()}:
+																		{new Date(item.created_at).getMinutes()}:
+																		{new Date(item.created_at).getSeconds()}
+																	</p>
+																</div>
+															</div>
+														</div>
+													))
+												}
+											</div>
+											:
+											<h1 className='text-center'>
+												Belum ada komentar..
+											</h1>
+									}
 								</div>
+								{
+									showKomentar && (
+										<div className='mt-10'>
+											<Input
+												type='text'
+												placeholder='Nama anda'
+												radius='sm'
+												value={namaKomentar}
+												onChange={e => setNamaKomentar(e.target.value)}
+											/>
+											<Textarea
+												fullWidth
+												placeholder='Tambahkan komentar anda'
+												radius='sm'
+												className='mt-2'
+												value={pesanKomentar}
+												onChange={e => setPesanKomentar(e.target.value)}
+											/>
+											<Button
+												radius='sm'
+												color='primary'
+												className='mt-4'
+												onPress={postKomentar}
+												isLoading={isLoadingPostKomentar}
+											>
+												Komentar
+											</Button>
+											<Button
+												radius='sm'
+												color='default'
+												className='mt-4 ml-2'
+												onPress={() => { setShowKomentar(false) }}
+											>
+												Batalkan
+											</Button>
+										</div>
+									)
+								}
 							</div>
 						</div>
 					</div>
