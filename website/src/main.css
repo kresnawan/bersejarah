@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+@config "../tailwind.config.js";
+
+.embla {
+  max-width: 1024px;
+  margin: auto;
+  --slide-height: 19rem;
+  --slide-spacing: 1rem;
+  --slide-size: 70%;
+}
+.embla__viewport {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+.embla__slide {
+  transform: translate3d(0, 0, 0);
+  flex: 0 0 90%;
+  min-width: 0;
+  padding-left: var(--slide-spacing);
+}
+
+.emblaz {
+  max-width: 48rem;
+  margin: auto;
+  --slide-height: 19rem;
+  --slide-spacing: 1rem;
+  --slide-size: 100%;
+}
+.embla__viewportz {
+  overflow: hidden;
+}
+.embla__containerz {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+.embla__slidez {
+  transform: translate3d(0, 0, 0);
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding-left: var(--slide-spacing);
+}
+
+.truncate-single-line {
+  white-space: nowrap;      /* Prevents the text from wrapping to a new line */
+  overflow: hidden;         /* Hides any text that goes beyond the container */
+  text-overflow: ellipsis;  /* Displays an ellipsis (...) for the clipped text */
+  max-width: full;         /* Optional: Set a specific width for the container */
+}
