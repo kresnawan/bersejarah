@@ -153,10 +153,10 @@ func GetTempatByID(id string) ([]byte, error) {
 	return jsonData, nil
 }
 
-func GetFotoByID(id string) ([]byte, error) {
+func GetFotoByID(id string) ([]string, []byte, error) {
 	rows, err := Db.Query("SELECT nama_foto FROM foto_tempat WHERE data_id = ?", id)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	var ArrDataNama []string
@@ -166,7 +166,7 @@ func GetFotoByID(id string) ([]byte, error) {
 	for rows.Next() {
 		var DataNama string
 		if err := rows.Scan(&DataNama); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
 		ArrDataNama = append(ArrDataNama, DataNama)
@@ -178,10 +178,10 @@ func GetFotoByID(id string) ([]byte, error) {
 
 	jsonData, err := json.Marshal(ArrDataNama)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return jsonData, nil
+	return ArrDataNama, jsonData, nil
 
 }
 

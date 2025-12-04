@@ -276,7 +276,7 @@ function Tambah() {
 									// Cropper.js options
 									ref={cropperRef}
 									style={{ height: 400, width: "100%" }}
-									aspectRatio={4 / 3}
+									aspectRatio={5 / 3}
 									preview=".img-preview"
 									viewMode={1}
 									minCropBoxHeight={10}

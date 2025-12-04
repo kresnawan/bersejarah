@@ -26,11 +26,13 @@ function Id() {
 	const [isLoadingPostKomentar, setIsLoadingPostKomentar] = useState(false);
 
 	const [showKomentar, setShowKomentar] = useState(false)
+	const [komentarCount, setKomentarCount] = useState(0);
 
 	function getKomentar() {
 		setIsLoadingK(true);
 		axiosPrivate.get(`/data/${id}/komentar`).then(res => {
 			setKomentar(res.data);
+			setKomentarCount(res.data.length);
 		}).catch(err => {
 			console.log(err);
 		}).finally(() => {
@@ -51,8 +53,12 @@ function Id() {
 		}).then(() => {
 			getKomentar();
 			setShowKomentar(false)
+			setNamaKomentar("");
+			setPesanKomentar("");
+			window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })
 		}).catch(err => {
 			console.log(err);
+			alert("Maaf terjadi error");
 		}).finally(() => {
 			setIsLoadingPostKomentar(false);
 		})
@@ -119,7 +125,7 @@ function Id() {
 							{/* Comment section */}
 							<div className='mt-10'>
 								<div className='flex flex-row justify-between'>
-									<h1 className='text-medium font-bold'>Komentar</h1>
+									<h1 className='text-medium font-bold'>Komentar - {komentarCount}</h1>
 									{
 										!showKomentar && <PlusIcon className='size-6 hover:cursor-pointer' onClick={() => { setShowKomentar(true); }} />
 									}
@@ -144,11 +150,6 @@ function Id() {
 																		{new Date(item.created_at).getMonth() + 1}/
 																		{new Date(item.created_at).getFullYear()}
 																	</p>
-																	<p className='text-default-400'>
-																		{new Date(item.created_at).getHours()}:
-																		{new Date(item.created_at).getMinutes()}:
-																		{new Date(item.created_at).getSeconds()}
-																	</p>
 																</div>
 															</div>
 														</div>
@@ -157,7 +158,7 @@ function Id() {
 											</div>
 											:
 											<h1 className='text-center'>
-												Belum ada komentar..
+												Loading komentar..
 											</h1>
 									}
 								</div>

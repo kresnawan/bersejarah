@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -156,7 +158,6 @@ func UploadFoto(c *gin.Context) {
 
 	c.Data(200, "application/json", resoo)
 	c.Abort()
-	return
 
 }
 
@@ -182,7 +183,7 @@ func GetTempatByID(c *gin.Context) {
 
 func GetFotoByID(c *gin.Context) {
 	id := c.Param("id")
-	data, err := storage.GetFotoByID(id)
+	_, data, err := storage.GetFotoByID(id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.Status(404)
@@ -199,6 +200,26 @@ func GetFotoByID(c *gin.Context) {
 
 func DeleteDataTempat(c *gin.Context) {
 	DataID := c.Param("id")
+
+	filesToDelete, _, err := storage.GetFotoByID(DataID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed delete the file", "err": err.Error()})
+		c.Abort()
+		return
+	}
+
+	for _, filePath := range filesToDelete {
+		err := os.Remove("uploads/" + filePath)
+		if err != nil {
+			if os.IsNotExist(err) {
+				log.Printf("File not found : %s, skipping\n", filePath)
+				return
+			} else {
+				log.Printf("Error deleting the file : %s\n", filePath)
+				return
+			}
+		}
+	}
 
 	res, err := storage.DeleteData(DataID)
 	if err != nil {
