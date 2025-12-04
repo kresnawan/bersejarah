@@ -17,7 +17,7 @@ function ImageCarousel({ images }) {
 				{
 					images.map((item, index) => (
 						<div className="embla__slide">
-							<Image src={`https://b-api.kresnawan.com/uploads/${item}`} key={index} className='max-w-full min-w-0 w-5xl' radius='none' />
+							<Image src={`http://localhost:3032/api/v1/uploads/${item}`} key={index} className='max-w-full min-w-0 w-5xl' radius='none' />
 						</div>
 					))
 				}

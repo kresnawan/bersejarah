@@ -32,6 +32,7 @@ func RouterInit() {
 		UsersRoutes(v1Router)
 		TestRoutes(v1Router)
 		DataTempatRoutes(v1Router)
+		UploadsRoute(v1Router)
 	}
 
 	Router.Run()

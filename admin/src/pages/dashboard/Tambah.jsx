@@ -1,15 +1,24 @@
 import { Button, Form, Input, Textarea, Image, NumberInput } from "@heroui/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosPrivate from "../../axios.js";
+
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
 
 function Tambah() {
 
 	const navigate = useNavigate();
+	const cropperRef = useRef(null);
 
 	const [files, setFiles] = useState([]);
 	const [imagesURL, setImagesURL] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
+
+	const [croppedImages, setCroppedImages] = useState([]);
+	const [currentCrop, setCurrentCrop] = useState(0);
+
+	const [fileIn, setFileIn] = useState(false);
 
 	const [formInput, setFormInput] = useState({
 		nama_tempat: "",
@@ -23,10 +32,28 @@ function Tambah() {
 		long: 0
 	});
 
+	function getCropImage() {
+		if (cropperRef.current?.cropper !== "undefined") {
+			cropperRef.current?.cropper.getCroppedCanvas().toBlob(blob => {
+				if (blob) {
+					const file = new File([blob], 'asdfg.jpg', {type: 'image/jpeg'});
+					setCroppedImages(prev => [...prev, file])
+				}
+			})
+			if (currentCrop < imagesURL.length - 1) {
+				setCurrentCrop(currentCrop + 1);
+			} else {
+				setFileIn(false);
+			}
+		}
+	}
+
 	function uploadImage(id) {
+		console.log(croppedImages)
+		console.log(files)
 		const formData = new FormData();
-		for (var file in files) {
-			formData.append("images", files[file]);
+		for (var file in croppedImages) {
+			formData.append("images", croppedImages[file]);
 		}
 
 		formData.append("id", id);
@@ -62,7 +89,7 @@ function Tambah() {
 			return
 		}
 
-		
+
 		axiosPrivate.post("/data", formInput).then(res => {
 			console.log(res.data);
 			uploadImage(res.data.insertid);
@@ -89,6 +116,7 @@ function Tambah() {
 	}
 
 	function handleFileChange(e) {
+
 		let filesArr = Array.from(e.target.files);
 		setFiles(filesArr);
 
@@ -98,6 +126,8 @@ function Tambah() {
 		}
 
 		setImagesURL(tempURL);
+		setCurrentCrop(0);
+		setFileIn(true);
 	}
 
 	useEffect(() => {
@@ -237,18 +267,31 @@ function Tambah() {
 							onChange={handleFileChange}
 						/>
 
-						<div className="overflow-x-scroll">
-							<div className="flex">
-								{
-									imagesURL.length > 0 &&
-									imagesURL.map((item, index) => (
-										<div key={index} className="">
-											<Image src={item} className="max-h-[180px] inline-block" />
-										</div>
-									))
-								}
+						{
+							fileIn &&
+							<div>
+								<Cropper
+									src={imagesURL[currentCrop]}
+									//   style={{ height: 400, width: "100%" }}
+									// Cropper.js options
+									ref={cropperRef}
+									style={{ height: 400, width: "100%" }}
+									aspectRatio={4 / 3}
+									preview=".img-preview"
+									viewMode={1}
+									minCropBoxHeight={10}
+									minCropBoxWidth={10}
+									background={false}
+									responsive={true}
+									autoCropArea={1}
+									checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+									guides={true}
+								/>
+								<div>
+									<Button onPress={getCropImage}>Crop</Button>
+								</div>
 							</div>
-						</div>
+						}
 
 						<Button
 							type="submit"

@@ -1,11 +1,11 @@
 import { Image } from "@heroui/react"
-import fotoBersama from "../assets/fotobersama.jpg"
+import fotoBersama from "../assets/jodipan.jpg"
 
 function About() {
   return (
     <div className='px-5 max-w-5xl mt-5 mb-20'>
       <div className="flex justify-center mb-10">
-        <Image src={fotoBersama} radius="none" />
+        <Image src={fotoBersama} radius="none" className="max-h-100" />
       </div>
       <p className="text-[12px] text-justify">
         Kabupaten Malang adalah daerah yang menjadi salah satu daya tarik turis utama di Jawa Timur. Salah satu daya tarik turismenya terletak pada wisata sejarah dan warisan budaya (heritage). Sebagai salah satu peradaban pertama di nusantara, Kabupaten Malang memiliki situs benda warisan budaya benda dan takbenda yang beragam. Di samping situs fisik, warisan budaya takbenda seperti tradisi dan seni-tari. Namun demikian keberadaan artefak ini tidak terdata secara maksimal. Tujuan utama dari kegiatan pengabdian masyarakat ini adalah untuk memberdayakan pegiat seni dan budaya lokal dalam melestarikan dan mempromosikan aset budaya mereka melalui teknologi digital.

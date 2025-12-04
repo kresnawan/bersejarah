@@ -90,7 +90,7 @@ function App({ data }) {
       }}
       style={{
         width: width,
-        height: height - 40 - 56
+        height: height - 40 - 52
       }}
       mapStyle="https://api.maptiler.com/maps/openstreetmap/style.json?key=qMwjSy8lYbHFysUGYPyX"
     >
@@ -109,7 +109,7 @@ function App({ data }) {
           <XMarkIcon className='size-5 absolute right-1 top-1 hover:cursor-pointer' onClick={() => setShowPopup(false)} />
 
           <div className='overflow-hidden rounded-sm mt-2 mb-2'>
-            <Image src={`https://b-api.kresnawan.com/uploads/${popUp.img}`} radius='none' />
+            <Image src={`http://localhost:3032/api/v1/uploads/${popUp.img}`} radius='none' />
           </div>
           <p className='font-bold text-[18px]'>{popUp.tle}</p>
           <p className='mt-2'>{popUp.desc.slice(0, 120) + ".."}</p>

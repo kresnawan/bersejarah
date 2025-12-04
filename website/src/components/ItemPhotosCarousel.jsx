@@ -17,9 +17,7 @@ function ItemPhotosCarousel({ data }) {
         {
           data.map((item, index) => (
             <div className="embla__slidez" key={index}>
-              <div className='max-h-100 overflow-hidden' >
-                <Image src={`https://b-api.kresnawan.com/uploads/${item}`} radius='none' className='min-w-full w-5xl min-h-full' />
-              </div>
+                <Image src={`http://localhost:3032/api/v1/uploads/${item}`} radius='none' className='min-w-full w-5xl min-h-full' />
             </div>
           ))
         }
